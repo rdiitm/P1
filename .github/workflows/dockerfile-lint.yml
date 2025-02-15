@@ -1,0 +1,29 @@
+name: Dockerfile Lint
+
+# This will trigger the action on push and pull request events.
+on:
+  push:
+    paths:
+      - 'Dockerfile'  # Only run if the Dockerfile changes
+  pull_request:
+    paths:
+      - 'Dockerfile'
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest  # Defines the operating system for the job
+
+    steps:
+      # Step 1: Checkout the repository to the runner
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      # Step 2: Install Hadolint (a linter for Dockerfiles)
+      - name: Install Hadolint
+        run: |
+          curl -sSL https://github.com/hadolint/hadolint/releases/download/v2.8.0/hadolint-Linux-x86_64 -o /usr/local/bin/hadolint
+          chmod +x /usr/local/bin/hadolint
+
+      # Step 3: Lint the Dockerfile
+      - name: Lint Dockerfile
+        run: hadolint Dockerfile
